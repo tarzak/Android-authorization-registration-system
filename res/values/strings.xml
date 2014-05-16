@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">android_39_SQLiteRegistrationSys</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_greetings">GreetingsActivity</string>
+
+</resources>
