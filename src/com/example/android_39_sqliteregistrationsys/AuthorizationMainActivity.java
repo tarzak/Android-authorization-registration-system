@@ -45,65 +45,12 @@ public class AuthorizationMainActivity extends Activity implements OnClickListen
 
 	@Override
 	public void onClick(View v) {
+		String id = v.getId();
 		
-		
-		switch (v.getId()) {
-		
-		case R.id.btnLogin: 
-			
-			String loginEnt = eTLogin.getText().toString().toLowerCase();
-			String passwordEnt = eTPassword.getText().toString();
-			String selection = null;
-			String[] columns = null;
-			String[] selectionArgs = null;
-			
-			db = dbHelper.getWritableDatabase();
-			
-			Cursor c = null;
-			
-			Log.d(LOG_TAG, "Button login was pressed");
-			selection = "login = ?";
-			selectionArgs = new String[] { loginEnt };
-			columns = new String[] { "password" };
-			c = db.query("sqliteregistrationsys", columns, selection, selectionArgs, null, null,
-					null);
-						
-			if (c != null) {
-				Log.d(LOG_TAG, "Cursor is not null");
-				Log.d(LOG_TAG, "Number of rows " + c.getCount());
-				if (c.getCount() == 0) {
-					tVLogin.setText("There is no such user");
-					tVLogin.setTextColor(getResources().getColor(R.color.opaque_red));
-				}
-				else {	
-					if (c.moveToFirst()) {
-						String passwordCheck = "";
-						
-						do {
-							for (String cn : c.getColumnNames()) {
-								passwordCheck = c.getString(c.getColumnIndex(cn));
-							}
-							Log.d(LOG_TAG, passwordCheck + passwordEnt);
-						} while (c.moveToNext());
-						
-						if (passwordEnt.equalsIgnoreCase(passwordCheck)){
-							Log.d(LOG_TAG, "You have entered correct password!");
-							Intent intent = new Intent(this, GreetingsActivity.class);
-							message = loginEnt;
-							intent.putExtra(EXTRA_MESSAGE, message);
-							startActivity(intent);
-						}
-						else
-							Log.d(LOG_TAG, "Login or Password is invalid, try again!");
-					}
-				}
-			} 
-			else
-				Log.d(LOG_TAG, "Cursor is null");
-			
-			dbHelper.close();
-			
-		break;
+		switch (id) {
+		case R.id.btnLogin:
+			login();
+			break;
 		
 		case R.id.btnRegistration:
 			Intent intent = new Intent(this, RegistrationActivity.class);
@@ -111,5 +58,59 @@ public class AuthorizationMainActivity extends Activity implements OnClickListen
 			Log.d(LOG_TAG, "Button Register was pressed");
 		break;
 		}				
+	}
+	
+	@Override
+	private void login() {
+		String loginEnt = eTLogin.getText().toString().toLowerCase();
+		String passwordEnt = eTPassword.getText().toString();
+		String selection = null;
+		String[] columns = null;
+		String[] selectionArgs = null;
+		
+		db = dbHelper.getWritableDatabase();
+		
+		Cursor c = null;
+		
+		Log.d(LOG_TAG, "Button login was pressed");
+		selection = "login = ?";
+		selectionArgs = new String[] { loginEnt };
+		columns = new String[] { "password" };
+		c = db.query("sqliteregistrationsys", columns, selection, selectionArgs, null, null, null);
+					
+		if (c == null) {
+			Log.d(LOG_TAG, "Cursor is null"); 
+		} else {
+			Log.d(LOG_TAG, "Cursor is not null");
+			Log.d(LOG_TAG, "Number of rows " + c.getCount());
+			if (c.getCount() == 0) {
+				tVLogin.setText("There is no such user");
+				tVLogin.setTextColor(getResources().getColor(R.color.opaque_red));
+			}
+			else {	
+				if (c.moveToFirst()) {
+					String passwordCheck = "";
+					
+					do {
+						for (String cn : c.getColumnNames()) {
+							passwordCheck = c.getString(c.getColumnIndex(cn));
+						}
+						Log.d(LOG_TAG, passwordCheck + passwordEnt);
+					} while (c.moveToNext());
+					
+					if (passwordEnt.equalsIgnoreCase(passwordCheck)){
+						Log.d(LOG_TAG, "You have entered correct password!");
+						Intent intent = new Intent(this, GreetingsActivity.class);
+						message = loginEnt;
+						intent.putExtra(EXTRA_MESSAGE, message);
+						startActivity(intent);
+					}
+					else
+						Log.d(LOG_TAG, "Login or Password is invalid, try again!");
+				}
+			}
+		} 
+		
+		dbHelper.close();
 	}
 }
